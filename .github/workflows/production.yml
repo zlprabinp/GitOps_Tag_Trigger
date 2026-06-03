@@ -9,6 +9,16 @@ jobs:
   check_branch:
     if: github.event.base_ref == 'refs/heads/dev'
     runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Echo branch
+        run: echo "${{ github.event.base_ref }}"
+
+  default:
+    runs-on: ubuntu-latest
     
     steps:
       - name: Checkout repository
