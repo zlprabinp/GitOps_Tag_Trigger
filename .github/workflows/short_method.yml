@@ -1,0 +1,31 @@
+name: Short test
+
+on:
+  push:
+    tags:
+      - 'v*-rc*'
+
+jobs:
+  check_branch:
+    if: github.event.base_ref == 'refs/heads/dev' || github.event.base_ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Echo branch
+        run: echo "${{ github.event.base_ref }}"
+
+      - name: Follow the step
+        run: echo "Continue the pipeline"
+
+  default:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Echo branch
+        run: echo "${{ github.event.base_ref }}"
+
+      - name: Didnot pass
+        run: echo "The test didnot pass"

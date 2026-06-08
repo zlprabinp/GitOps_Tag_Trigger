@@ -1,28 +1,43 @@
-name: Release from Main Tags
+name: Support Intelligence Backend CI/CD Pipeline for DEV
 
 on:
   push:
     tags:
-      - 'v*'
+      - 'v*-rc*'
 
 jobs:
   check_branch:
-    if: github.event.base_ref == 'refs/heads/dev'
     runs-on: ubuntu-latest
 
+    outputs:
+      allowed: ${{ steps.check.outputs.allowed }}
+      branch: ${{ steps.check.outputs.branch }}
+
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Echo branch
-        run: echo "${{ github.event.base_ref }}"
+      - name: Check branch ancestry
+        id: check
+        run: |
+          git fetch origin main dev
 
-  default:
+          if git merge-base --is-ancestor "$GITHUB_SHA" origin/dev; then
+            echo "allowed=true" >> "$GITHUB_OUTPUT"
+            echo "branch=dev" >> "$GITHUB_OUTPUT"
+
+          elif git merge-base --is-ancestor "$GITHUB_SHA" origin/main; then
+            echo "allowed=true" >> "$GITHUB_OUTPUT"
+            echo "branch=main" >> "$GITHUB_OUTPUT"
+
+          else
+            echo "allowed=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  build-and-update-manifest:
+    needs: check_branch
+    if: needs.check_branch.outputs.allowed == 'true'
     runs-on: ubuntu-latest
-    
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Echo branch
-        run: echo "${{ github.event.base_ref }}"
+      - uses: actions/checkout@v4
