@@ -1,10 +1,15 @@
 name: gitleaks
 on:
+<<<<<<< HEAD
   pull_request:
     branches: [local]
   push:
     branches: [local]
 
+=======
+  push:
+    branches: [test]
+>>>>>>> 428b412 (testing secret key)
 jobs:
   scan:
     name: gitleaks
