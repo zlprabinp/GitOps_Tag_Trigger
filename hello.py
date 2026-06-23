@@ -1,1 +1,2 @@
-AWS_SECRET_ACCESS_KEY=abcdefghijklmnopqrstuvwxyz1234567890ABCD
+AWS_SECRET_ACCESS_KEY: "abcdefghijklmnopqrstuvwxyz1234567890ABCD"
+db_password: "postgres"
